@@ -1,0 +1,27 @@
+﻿<Window x:Class="WPF_MSSQL.RegisterWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:WPF_MSSQL"
+        mc:Ignorable="d"
+        Title="Окно регистрации" Height="300" Width="400">
+    <Grid Margin="10">
+        <StackPanel>
+            <TextBlock Text="Регистрация" HorizontalAlignment="Center" FontSize="20"/>
+            <TextBlock Text="Логин: "/>
+            <TextBox x:Name="LoginTB" Margin="0,0,0,10"/>
+            <TextBlock Text="Пароль: "/>
+            <PasswordBox x:Name="PasswordTB" Margin="0,0,0,10"/>
+            <TextBlock Text="Тип аккаунта: "/>
+            <ComboBox x:Name="TypeAccount" Margin="0,0,0,10" SelectionChanged="TypeAccount_SelectionChanged">
+                <ComboBoxItem Content="admin"/>
+                <ComboBoxItem Content="user"/>
+            </ComboBox>
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                <Button Content="Зарегистрироваться" x:Name="RegisterBtn" Click="RegisterBtn_Click"/>
+                <Button Content="Отмена" Name="CancelBtn" Click="CancelBtn_Click" Margin="10,0,0,0"/>
+            </StackPanel>
+        </StackPanel>
+    </Grid>
+</Window>
