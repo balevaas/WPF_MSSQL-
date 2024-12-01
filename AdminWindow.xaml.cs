@@ -19,9 +19,10 @@ namespace WPF_MSSQL
     /// </summary>
     public partial class AdminWindow : Window
     {
-        public AdminWindow()
+        public AdminWindow(string username)
         {
             InitializeComponent();
+            AdminName.Text = $"Добро пожаловать, {username}!";
         }
     }
 }

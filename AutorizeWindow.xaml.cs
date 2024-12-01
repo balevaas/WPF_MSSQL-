@@ -25,13 +25,13 @@ namespace WPF_MSSQL
         {
             InitializeComponent();
         }
-
+        public string Username { get; set; }
         private void LogoutBtn_Click(object sender, RoutedEventArgs e)
         {
-            string username = UsernameTextBox.Text; //сохраняем значение логина
+            Username = UsernameTextBox.Text; //сохраняем значение логина
             string password = PasswordBox.Password; // и пароля
 
-            var(isAuthenticated, role) = AuthenticateUser(username, password); // кортеж значений
+            var(isAuthenticated, role) = AuthenticateUser(Username, password); // кортеж значений
 
             if (isAuthenticated) // если вернуло true
             {
@@ -51,7 +51,7 @@ namespace WPF_MSSQL
             switch(role) // идем по роли
             {
                 case "admin": 
-                    windowToOpen = new AdminWindow(); // сохраняем админское окно
+                    windowToOpen = new AdminWindow(Username); // сохраняем админское окно, передаем логин для отображения                     
                     break;
                 case "user":
                     windowToOpen = new UserWindow(); // или пользовательское
