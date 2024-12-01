@@ -20,7 +20,7 @@ namespace WPF_MSSQL
     /// </summary>
     public partial class AutorizeWindow : Window
     {
-        DataBase database = new DataBase();
+        DataBase database = new DataBase(); // экземпляр класса DataBase
         public AutorizeWindow()
         {
             InitializeComponent();
@@ -28,14 +28,14 @@ namespace WPF_MSSQL
 
         private void LogoutBtn_Click(object sender, RoutedEventArgs e)
         {
-            string username = UsernameTextBox.Text;
-            string password = PasswordBox.Password;
+            string username = UsernameTextBox.Text; //сохраняем значение логина
+            string password = PasswordBox.Password; // и пароля
 
             var(isAuthenticated, role) = AuthenticateUser(username, password); // кортеж значений
 
-            if (isAuthenticated)
+            if (isAuthenticated) // если вернуло true
             {
-                OpenRoleBaseWindow(role);
+                OpenRoleBaseWindow(role); //открываем окно соотв. роли
                 MessageBox.Show("Вход выполнен успешно!", "Уведомление");
                 this.Close(); // Закрыть окно авторизации
             }
@@ -47,41 +47,48 @@ namespace WPF_MSSQL
 
         private void OpenRoleBaseWindow(string role)
         {
-            Window windowToOpen;
-            switch(role)
+            Window windowToOpen; // экземпляр окна
+            switch(role) // идем по роли
             {
-                case "admin":
-                    windowToOpen = new AdminWindow();
+                case "admin": 
+                    windowToOpen = new AdminWindow(); // сохраняем админское окно
                     break;
                 case "user":
-                    windowToOpen = new UserWindow();
+                    windowToOpen = new UserWindow(); // или пользовательское
                     break;
                 default:
                     MessageBox.Show("Неизвестный пользователь", "Предупреждение");
                     return;
             }
-            windowToOpen.Show();
+            windowToOpen.Show(); // открываем соотв. окно
         }
 
+        /// <summary>
+        /// метод возвращает два параметра и принимает логин и пароль
+        /// </summary>
+        /// <param name="username"></param>
+        /// <param name="password"></param>
+        /// <returns></returns>
         private (bool isAuthenticated, string role) AuthenticateUser(string username, string password)
         {          
             database.OpenConnection();
-            string query = "SELECT Role FROM Users WHERE Username = @Username AND PasswordHash = @Password";
+            string query = "SELECT Role FROM Users WHERE Username = @Username AND PasswordHash = @Password"; // запрос ищет роль по совпадению логина и пароля
 
             using (SqlCommand command = new SqlCommand(query, database.GetConnection()))
             {
-                command.Parameters.AddWithValue("@Username", username);
-                command.Parameters.AddWithValue("@Password", password); // Не забудьте использовать хеширование пароля!
+                // добавляем параметры для поиска
+                command.Parameters.AddWithValue("@Username", username); 
+                command.Parameters.AddWithValue("@Password", password); 
 
-                var role = command.ExecuteScalar() as string;
-                return (role != null, role);
+                var role = command.ExecuteScalar() as string; // роль сохраняем строкой
+                return (role != null, role); // если не null возвращаем ее
             }            
         }
 
         private void RegisterBtn_Click(object sender, RoutedEventArgs e)
         {
             this.Hide();
-            RegisterWindow rg = new RegisterWindow();   
+            RegisterWindow rg = new RegisterWindow();   // открывает окно регистрации
             rg.Show();
         }
     }
