@@ -54,7 +54,7 @@ namespace WPF_MSSQL
                     windowToOpen = new AdminWindow(Username); // сохраняем админское окно, передаем логин для отображения                     
                     break;
                 case "user":
-                    windowToOpen = new UserWindow(); // или пользовательское
+                    windowToOpen = new MainWindow(); // или пользовательское
                     break;
                 default:
                     MessageBox.Show("Неизвестный пользователь", "Предупреждение");
@@ -87,9 +87,9 @@ namespace WPF_MSSQL
 
         private void RegisterBtn_Click(object sender, RoutedEventArgs e)
         {
-            this.Hide();
             RegisterWindow rg = new RegisterWindow();   // открывает окно регистрации
             rg.Show();
+            this.Close();
         }
     }
 }

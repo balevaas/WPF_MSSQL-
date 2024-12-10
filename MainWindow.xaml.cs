@@ -192,9 +192,14 @@ namespace WPF_MSSQL
 
         private void AutorizeBtn_Click(object sender, RoutedEventArgs e)
         {
-            this.Hide();   
             AutorizeWindow auto = new AutorizeWindow(); // просто открываем окно авторизации
             auto.Show();
+            this.Close();
+        }
+
+        private void ExitBtn_Click(object sender, RoutedEventArgs e)
+        {
+            this.Close();
         }
     }
 

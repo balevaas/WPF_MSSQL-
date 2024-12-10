@@ -62,9 +62,9 @@ namespace WPF_MSSQL
 
         private void CancelBtn_Click(object sender, RoutedEventArgs e)
         {
-            this.Close();
             MainWindow mainWindow = new MainWindow();
             mainWindow.Show();
+            this.Close();
         }
 
         public string SelectedRole { get; set; }

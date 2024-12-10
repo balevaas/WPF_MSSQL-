@@ -5,18 +5,19 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:WPF_MSSQL"
         mc:Ignorable="d"
-        Title="Главное окно" Height="550" Width="600" WindowStartupLocation="CenterScreen">
+        Title="Главное окно" Height="600" Width="600" WindowStartupLocation="CenterScreen">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="0.3*"/>
             <RowDefinition/>
         </Grid.RowDefinitions>
-        <StackPanel Width="200" Grid.Row="0" HorizontalAlignment="Left">
+        <StackPanel Width="200" Grid.Row="0" HorizontalAlignment="Left" Margin="5">
             <Label Content="Поиск:"/>
             <TextBox x:Name="SearchTb" TextChanged="SearchTb_TextChanged"/>
             <Button Content="Авторизоваться" Margin="10,25,10,0" x:Name="AutorizeBtn" Click="AutorizeBtn_Click"/>
         </StackPanel>
         <StackPanel HorizontalAlignment="Right" Margin="0,5,5,5">
+            <Button Content="Выход" x:Name="ExitBtn" Click="ExitBtn_Click"/>
             <Label Content="Фильтровать по автору:"/>
             <ComboBox x:Name="AuthorCB" SelectionChanged="AuthorCB_SelectionChanged"/>
             <Label Content="Фильтровать по году издания:"/>
