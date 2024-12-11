@@ -5,7 +5,8 @@ namespace WPF_MSSQL
 {
     public class DataBase
     {
-        SqlConnection sqlConnection = new SqlConnection(@"Server=Anastasia-ПК\SQLEXPRESS;Database=Biblio;Trusted_Connection=true;MultipleActiveResultSets=true;TrustServerCertificate=true;encrypt=false");
+        //SqlConnection sqlConnection = new SqlConnection(@"Server=Anastasia-ПК\SQLEXPRESS;Database=Biblio;Trusted_Connection=true;MultipleActiveResultSets=true;TrustServerCertificate=true;encrypt=false");
+        SqlConnection sqlConnection = new SqlConnection(@"Server=DBSRV\BAL2024;Database=TestEcologyDB;Trusted_Connection=true;MultipleActiveResultSets=true;TrustServerCertificate=true;encrypt=false");
         public void OpenConnection()
         {
             // Если состояние строки закрыто, открываем

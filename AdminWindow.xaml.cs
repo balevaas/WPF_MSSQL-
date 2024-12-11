@@ -1,6 +1,7 @@
 ﻿using Microsoft.Data.SqlClient;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -21,31 +22,63 @@ namespace WPF_MSSQL
     public partial class AdminWindow : Window
     {
         DataBase database = new DataBase();
+        /// <summary>
+        /// Передаем параметр username в конструктор окна, чтобы передать значения логина из окна авторизации
+        /// </summary>
+        /// <param name="username"></param>
         public AdminWindow(string username)
         {
             InitializeComponent();
-            AdminName.Text = $"Добро пожаловать, {username}!";
-            booksgrid.ItemsSource = database.SelectData("select * from Books").DefaultView;
-            authorsgrid.ItemsSource = database.SelectData("select * from Authors").DefaultView;
+            AdminName.Text = $"Добро пожаловать, {username}!"; // в текст бокс выводится текст с логином конкретного пользователя
+            booksgrid.ItemsSource = database.SelectData("select * from Books").DefaultView; // заполнение таблицы booksgrid во вкладке Книги
+            authorsgrid.ItemsSource = database.SelectData("select * from Authors").DefaultView; // заполнение таблицы authorsgrid во вкладке Авторы
+            LoadIDBook();
         }
 
+        private void LoadIDBook()
+        {
+            List<int> books = new List<int>();
+            string query = "select BookID from Books";
+            SqlCommand cmd = new SqlCommand(query, database.GetConnection());
+            database.OpenConnection();
+            SqlDataReader reader = cmd.ExecuteReader();
+            while(reader.Read())
+            {
+                books.Add(reader.GetInt32(0));
+            }
+            bookCB.ItemsSource = books;
+            database.CloseConnection();
+        }
+
+        /// <summary>
+        /// Кнопка "Выход"
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void ExitBtn_Click(object sender, RoutedEventArgs e)
         {
+            // Вовзращаемся назад в начальное окно
             MainWindow mainWindow = new MainWindow();
             mainWindow.Show();
             this.Close();
         }
 
-        private void AddBooks_Click(object sender, RoutedEventArgs e)
+        /// <summary>
+        /// Кнопка Добавить
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void Add_Click(object sender, RoutedEventArgs e)
         {
-            var header_name = EditingDates.SelectedItem as TabItem;
-            string header = header_name.Header.ToString();
-            switch(header)
+            var header_name = EditingDates.SelectedItem as TabItem; // сохраняем значение выбронной вкладки
+            string header = header_name.Header.ToString(); // сохраняем наименование заголовка открытой вкладки TabControl
+
+            switch(header) // идем по кейсам с названием вкладки
             {
                 case "Книги":
-                    AddDataToBooks();
+                    AddDataToBooks(); // вызываем метод для добавления книг
                     break;
-                case "Авторы":
+                case "Авторы": // аналогичная работа с вкладкой авторы
                     break;
             }
         }
@@ -98,14 +131,63 @@ namespace WPF_MSSQL
             }
         }
 
-        private void DeleteBooks_Click(object sender, RoutedEventArgs e)
+        private void Delete_Click(object sender, RoutedEventArgs e)
         {
-
+            string query = "delete from Books where BookID = @booksid";
+            SqlCommand cmd = new SqlCommand(query, database.GetConnection());
+            database.OpenConnection();
+            cmd.Parameters.AddWithValue("@booksid", SelectedBook);
+            int rowsdelete =  cmd.ExecuteNonQuery();
+            if(rowsdelete > 0)
+            {
+                MessageBox.Show($"Данные книги #{SelectedBook} удалены", "Уведомление");
+            }
+            else MessageBox.Show("Ошибка удаления данных", "Уведомление");
         }
 
-        private void UpdateBooks_Click(object sender, RoutedEventArgs e)
+        private void Update_Click(object sender, RoutedEventArgs e)
         {
+            string query = "update Books set Title = @title, AuthorID = @authorid, GenreID = @genreid, YearPublished = @year, PageCount = @page, Images = @images where BookID = @booksid";
+            SqlCommand command = new SqlCommand(query, database.GetConnection());
+            database.OpenConnection();
+            command.Parameters.AddWithValue("@booksID", SelectedBook);
+            command.Parameters.AddWithValue("@title", namebooks.Text);
+            command.Parameters.AddWithValue("@authorid", numberauthors.Text);
+            command.Parameters.AddWithValue("@genreid", numbergenre.Text);
+            command.Parameters.AddWithValue("@year", yearpublish.Text);
+            command.Parameters.AddWithValue("@page", pagecount.Text);
+            command.Parameters.AddWithValue("@images", linkimage.Text);
+            int rowsupdate = command.ExecuteNonQuery();
+            if(rowsupdate > 0)
+            {
+                MessageBox.Show($"Данные книги #{SelectedBook} обновлены", "Уведомление");
+            }
+            else MessageBox.Show("Ошибка обновления данных", "Уведомление");
+        }
 
+        public int SelectedBook { get; set; }
+        private void bookCB_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (bookCB.SelectedItem != null)
+            {
+                SelectedBook = Convert.ToInt32(bookCB.SelectedItem);
+                string query = "select * from Books where BookID = @booksID";
+                SqlCommand command = new SqlCommand(query, database.GetConnection());
+                database.OpenConnection();
+                command.Parameters.AddWithValue("@booksID", SelectedBook);
+                SqlDataReader sqlDataReader = command.ExecuteReader();
+                while(sqlDataReader.Read())
+                {
+                    numberbooks.Text = sqlDataReader.GetInt32(0).ToString();
+                    namebooks.Text = sqlDataReader.GetString(1).ToString();
+                    numberauthors.Text = sqlDataReader.GetInt32(2).ToString();
+                    numbergenre.Text = sqlDataReader.GetInt32(3).ToString();
+                    yearpublish.Text = sqlDataReader.GetInt32(4).ToString();
+                    pagecount.Text = sqlDataReader.GetInt32(5).ToString();
+                    linkimage.Text = sqlDataReader.GetString(6).ToString();
+                }
+                database.CloseConnection();                
+            }
         }
     }
 }
